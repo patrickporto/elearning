@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_head %}
+    {{ block.super }}
+    <script src="{% static "messenger/room.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+<div data-controller="hello">
+    <input data-target="hello.name" type="text">
+
+    <button data-action="click->hello#greet">
+        Greet
+    </button>
+
+    Example: <span data-target="hello.output"></span>
+</div>
+{% endblock %}
