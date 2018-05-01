@@ -1,9 +1,15 @@
 {% extends "base.html" %}
-{% load staticfiles %}
+{% load compress %}
+{% load static %}
 
 {% block extra_head %}
     {{ block.super }}
+    {% compress css %}
+    <link type="text/x-scss" rel="stylesheet" href="{% static "css/messenger.scss" %}">
+    {% endcompress %}
+    {% compress js %}
     <script src="{% static "messenger/room.js" %}"></script>
+    {% endcompress %}
 {% endblock %}
 
 {% block content %}

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'channels',
+    'compressor',
 
     'common',
     'messenger',
@@ -127,3 +128,22 @@ STATIC_URL = '/static/'
 # Django Channels
 
 ASGI_APPLICATION = "ava.routing.application"
+
+
+# Static files
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # other finders..
+    'compressor.finders.CompressorFinder',
+)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
+SASS_BIN = os.path.join(os.path.dirname(BASE_DIR), 'node_modules', '.bin', 'sass')
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss',  SASS_BIN + ' {infile} {outfile}'),
+)

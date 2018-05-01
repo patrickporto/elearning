@@ -7,8 +7,9 @@ name = "pypi"
 
 [packages]
 
-Django = "*"
+django = "*"
 channels = "*"
+django-compressor = "*"
 
 
 [dev-packages]

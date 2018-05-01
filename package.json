@@ -1,0 +1,22 @@
+{
+  "name": "elearning",
+  "version": "1.0.0",
+  "description": "Uma plataforma de educação a distância escrita em Python",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patrickporto/elearning.git"
+  },
+  "author": "Patrick Porto",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/patrickporto/elearning/issues"
+  },
+  "homepage": "https://github.com/patrickporto/elearning#readme",
+  "dependencies": {
+    "sass": "^1.3.0"
+  }
+}
