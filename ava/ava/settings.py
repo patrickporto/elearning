@@ -141,9 +141,11 @@ STATICFILES_FINDERS = (
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
-SASS_BIN = os.path.join(os.path.dirname(BASE_DIR), 'node_modules', '.bin', 'sass')
+NODE_MODULES = os.path.join(os.path.dirname(BASE_DIR), 'node_modules/.bin')
+SASS_BIN = os.path.join(NODE_MODULES, 'sass')
+BROWSERIFY_BIN = os.path.join(NODE_MODULES, 'browserify')
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss',  SASS_BIN + ' {infile} {outfile}'),
+    ('text/es6', BROWSERIFY_BIN + ' {infile} -t babelify --outfile {outfile}')
 )
