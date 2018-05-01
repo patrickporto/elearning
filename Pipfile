@@ -10,6 +10,7 @@ name = "pypi"
 django = "*"
 channels = "*"
 django-compressor = "*"
+channels-redis = "*"
 
 
 [dev-packages]
