@@ -1,0 +1,17 @@
+version: '3'
+services:
+  web:
+    build: .
+    command: ["python", "ava/manage.py", "runserver"]
+    ports:
+      - "8000:8000"
+    links:
+      - redis
+    volumes:
+      - ./bureauhub:/opt/app
+      - ./.venv:/usr/lib/pypy
+      - ./node_modules:/opt/app/node_modules
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
