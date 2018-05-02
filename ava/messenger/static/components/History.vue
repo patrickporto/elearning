@@ -13,7 +13,7 @@ export default {}
 
     .history {
         &-container {
-            height: 80vh;
+            height: 75vh;
             overflow-y: auto;
         }
     }

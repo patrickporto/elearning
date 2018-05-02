@@ -1,7 +1,12 @@
 
 import Vue from 'vue/dist/vue';
+import moment from 'moment';
+import VueMoment from 'vue-moment'
 import Message from './components/Message.vue'
 import History from './components/History.vue'
+
+
+Vue.use(VueMoment)
 
 
 const app = new Vue({
@@ -25,11 +30,23 @@ const app = new Vue({
   },
   methods: {
     receive(event) {
-      const { message } = JSON.parse(event.data);
-      this.chatLog.push({
-        content: message,
-        profileImg: 'https://placeimg.com/192/192/people',
-      })
+      const { message, sendingDate } = JSON.parse(event.data);
+      if (this.chatLog.length > 0) {
+        this.chatLog[this.chatLog.length - 1].messages.push({
+          content: message,
+          sendingDate: sendingDate,
+        })
+      } else {
+        this.chatLog.push({
+          messages: [
+            {
+              content: message,
+              sendingDate: sendingDate,
+            }
+          ],
+          profileImg: 'https://placeimg.com/192/192/people',
+        })
+      }
       const objDiv = document.getElementById("history");
       objDiv.scrollTop = objDiv.scrollHeight;
     },
@@ -39,9 +56,9 @@ const app = new Vue({
     send() {
       var message = this.messageInput;
       this.chatSocket.send(JSON.stringify({
-          'message': message
+          'message': message,
+          'sendingDate': moment().format(),
       }));
-  
       this.messageInput = '';
     },
     enter(event) {
