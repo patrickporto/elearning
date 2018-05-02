@@ -1,5 +1,7 @@
 
 import Vue from 'vue/dist/vue';
+import Message from './components/Message.vue'
+import History from './components/History.vue'
 
 
 const app = new Vue({
@@ -9,7 +11,12 @@ const app = new Vue({
   },
   data: {
     roomName: 'aula',
-    messageInput: ''
+    messageInput: '',
+    chatLog: [],
+  },
+  components: {
+    'chat-message': Message,
+    'chat-history': History,
   },
   created() {
     this.chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${this.roomName}/`)
@@ -18,9 +25,13 @@ const app = new Vue({
   },
   methods: {
     receive(event) {
-      var data = JSON.parse(event.data);
-      var message = data['message'];
-      document.querySelector('#chat-log').value += (message + '\n');
+      const { message } = JSON.parse(event.data);
+      this.chatLog.push({
+        content: message,
+        profileImg: 'https://placeimg.com/192/192/people',
+      })
+      const objDiv = document.getElementById("history");
+      objDiv.scrollTop = objDiv.scrollHeight;
     },
     close(event) {
       console.error('Chat socket closed unexpectedly');

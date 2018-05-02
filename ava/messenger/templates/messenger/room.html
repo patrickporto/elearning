@@ -22,15 +22,17 @@
     </div>
     <div class="col s9" id="messenger">
         <div class="row">
-            <textarea id="chat-log" rows="20"></textarea>
+            <chat-history>
+                <chat-message v-for="(item, index) in chatLog" :key="index"
+                    v-bind:content="item.content" v-bind:profile-img="item.profileImg" />
+            </chat-history>
         </div>
         <div class="row">
             <div class="input-field col s12">
-                <input id="messageInput" type="text" class="validate"
+                <input id="message-input" type="text" class="validate"
                     v-model="messageInput" v-on:keyup.enter="send" />
-                <label for="messageInput">Sua resposta</label>
+                <label for="message-input">Sua resposta</label>
             </div>
-            {{messageInput}}
         </div>
     </div>
 </div>
