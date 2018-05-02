@@ -30,9 +30,10 @@ const app = new Vue({
   },
   methods: {
     receive(event) {
-      const { message, sendingDate } = JSON.parse(event.data);
-      if (this.chatLog.length > 0) {
-        this.chatLog[this.chatLog.length - 1].messages.push({
+      const { message, sendingDate, author } = JSON.parse(event.data)
+      const lastChatLog = this.chatLog[this.chatLog.length - 1]
+      if (lastChatLog && lastChatLog.author.id === author.id) {
+        lastChatLog.messages.push({
           content: message,
           sendingDate: sendingDate,
         })
@@ -44,9 +45,10 @@ const app = new Vue({
               sendingDate: sendingDate,
             }
           ],
-          profileImg: 'https://placeimg.com/192/192/people',
+          author,
         })
       }
+      console.log(author.me)
       const objDiv = document.getElementById("history");
       objDiv.scrollTop = objDiv.scrollHeight;
     },

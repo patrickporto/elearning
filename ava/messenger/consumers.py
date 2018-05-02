@@ -25,21 +25,32 @@ class ChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         sending_date = text_data_json['sendingDate']
+        logged_user = self.scope['user']
 
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'chat_message',
                 'message': message,
-                'sendingDate': sending_date,
+                'sending_date': sending_date,
+                'author': {
+                    'id': logged_user.id,
+                    'name': logged_user.username,
+                    'photo': 'https://placeimg.com/192/192/people',
+                },
             }
         )
 
     def chat_message(self, event):
         message = event['message']
-        sending_date = event['sendingDate']
+        sending_date = event['sending_date']
+        author = event['author']
 
         self.send(text_data=json.dumps({
             'message': message,
             'sendingDate': sending_date,
+            'author': {
+                'me': self.scope['user'].id == author['id'],
+                **author
+            },
         }))

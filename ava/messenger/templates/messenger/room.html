@@ -24,7 +24,7 @@
         <div class="row">
             <chat-history>
                 <chat-message v-for="(item, index) in chatLog" :key="index"
-                    :messages="item.messages" :profile-img="item.profileImg" :sending-date="item.sendingDate" />
+                    :messages="item.messages" :author="item.author" :sending-date="item.sendingDate" />
             </chat-history>
         </div>
         <div class="row">
