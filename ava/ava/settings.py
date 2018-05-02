@@ -155,5 +155,5 @@ BROWSERIFY_BIN = os.path.join(NODE_MODULES, 'browserify')
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss',  SASS_BIN + ' {infile} {outfile}'),
-    ('text/es6', BROWSERIFY_BIN + ' {infile} -t babelify --outfile {outfile}')
+    ('text/es6', BROWSERIFY_BIN + ' {infile} -t babelify -t vueify --outfile {outfile}')
 )
