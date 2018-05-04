@@ -1,24 +1,17 @@
 <template>
-    <div class="message-container" :class="{ 'message--me': author.me }">
-        <div class="message-list" :class="{ 'message--me': author.me }">
-            <div class="message-content" :class="{ 'message--me': author.me }" v-for="(msg, index) in messages" :key="index"
-                :title="contentTitle">
+    <div class="message-group" :class="{ 'me': author.me, 'you': !author.me }">
+        <img class="author-photo" src="https://placeimg.com/192/192/people" alt="" :title="author.name">
+        <div class="messages">
+            <div class="message" v-for="(msg, index) in messages" :key="index">
                 <div class="message-inside">
                     {{ msg.content }}
                 </div>
             </div>
         </div>
-        <div class="message-photo" :class="{ 'message--me': author.me }">
-            <img :src="author.photo" :title="author.name" />
-        </div>
     </div>
 </template>
 
 <script>
-import moment from 'moment';
-
-moment.locale('pt-BR');
-
 export default {
     props: ['messages', 'author'],
 }
@@ -27,100 +20,89 @@ export default {
 <style lang="sass">
     $background-color: #F7F7F7;
 
-    .message {
-        &-inside {
-            background: $background-color;
-            border-radius: 4px;
-            display: inline-block;
-            padding: 10px;
-        }
+    .message-group {
+        padding: 20px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        align-content: center;
+    }
 
-        &-content {
-            display: block;
-            position: relative;
+    .messages {
+        display: inline-block;
+        flex: 1;
+        margin: 15px;
+    }
 
-            &.message--me {
-                text-align: right;
-                &:after {
-                    left: 100%;
-                    top: 50%;
-                    border: solid transparent;
-                    content: " ";
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    pointer-events: none;
-                    border-color: rgba(136, 183, 213, 0);
-                    border-left-color: $background-color;
-                    border-width: 10px;
-                    margin-top: -10px;
-                }
-            }
-            &:not(.message--me) {
-                text-align: left;
-                &:after {
-                    right: 100%;
-                    top: 50%;
-                    border: solid transparent;
-                    content: " ";
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    pointer-events: none;
-                    border-color: rgba(136, 183, 213, 0);
-                    border-right-color: $background-color;
-                    border-width: 10px;
-                    margin-top: -10px;
-                }
-            }
-        }
+    .message-inside {
+        display: inline-block;
+        background: $background-color;
+        border-radius: 4px;
+        padding: 10px;
+        position: relative;
+        clear: both;
+    }
+    .message + .message {
+        margin-top: 5px;
+    }
 
-        &-content + &-content {
-            margin-top: 5px;
-        }
+    .message-group + .message-group {
+        margin-top: 20px;
+    }
 
-        &-content + &-content:after,
-        &-content + &-content:before {
-            content: none;
-        }
-
-        &-list {
-            display: inline-block;
-            position: absolute;
-            top: 0;
-
-            &.message--me {
-                right: 92px;
-            }
-            &:not(.message--me) {
-                left: 92px;
+    .me {
+        text-align: right;
+        .message {
+            order: 0;
+            &:first-child .message-inside:after {
+                left: 100%;
+                top: 50%;
+                border: solid transparent;
+                content: " ";
+                height: 0;
+                width: 0;
+                position: absolute;
+                pointer-events: none;
+                border-color: rgba(136, 183, 213, 0);
+                border-left-color: $background-color;
+                border-width: 10px;
+                margin-top: -10px;
             }
         }
 
-        &-container {
-            position: relative;
+        .author-photo {
+            order: 1;
         }
+    }
 
-        &-container + &-container {
-            margin-top: 20px;
+    .you {
+        text-align: left;
+        .message {
+            order: 1;
+             &:first-child .message-inside:before {
+                right: 100%;
+                top: 50%;
+                border: solid transparent;
+                content: " ";
+                height: 0;
+                width: 0;
+                position: absolute;
+                pointer-events: none;
+                border-color: rgba(136, 183, 213, 0);
+                border-right-color: $background-color;
+                border-width: 10px;
+                margin-top: -10px;
+            }
         }
-
-        &-photo {
-            display: inline-block;
-            vertical-align: top;
-            position: absolute;
-            top: 0;
-
-            &.message--me {
-                right: 0;
-            }
-            &:not(.message--me) {
-                left: 0;
-            }
-            img {
-                border-radius: 100%;
-                max-width: 64px;
-            }
+        .author-photo {
+            order: 0;
         }
+    }
+
+    .author-photo {
+        display: inline-block;
+        border-radius: 100%;
+        max-width: 64px;
     }
 </style>

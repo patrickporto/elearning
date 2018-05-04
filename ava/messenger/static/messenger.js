@@ -48,7 +48,6 @@ const app = new Vue({
           author,
         })
       }
-      console.log(author.me)
       const objDiv = document.getElementById("history");
       objDiv.scrollTop = objDiv.scrollHeight;
     },
