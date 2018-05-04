@@ -27,3 +27,26 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
+
+
+class Curso(models.Model):
+    nome = models.CharField(max_length=255)
+    disciplinas = models.ManyToManyField('Disciplina')
+
+
+class Disciplina(models.Model):
+    nome = models.CharField(max_length=255)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_atualizacao = models.DateTimeField(auto_now=True)
+
+
+class Turma(models.Model):
+    vagas = models.IntegerField(default=50)
+    professor = models.ForeignKey(
+        Usuario,
+        on_delete=models.CASCADE,
+        limit_choices_to={'papel': Usuario.PROFESSOR},
+    )
+    periodo = models.CharField(max_length=7)
+    inicio = models.DateTimeField()
+    fim = models.DateTimeField()
