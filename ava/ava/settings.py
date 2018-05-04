@@ -149,6 +149,8 @@ STATICFILES_FINDERS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = '/media/'
 
 NODE_MODULES = os.path.join(os.path.dirname(BASE_DIR), 'node_modules/.bin')
 SASS_BIN = os.path.join(NODE_MODULES, 'sass')

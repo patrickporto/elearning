@@ -1,6 +1,6 @@
 <template>
     <div class="message-group" :class="{ 'me': author.me, 'you': !author.me }">
-        <img class="author-photo" src="https://placeimg.com/192/192/people" alt="" :title="author.name">
+        <img class="author-photo" :src="author.photo" alt="" :title="author.name">
         <div class="messages">
             <div class="message" v-for="(msg, index) in messages" :key="index">
                 <div class="message-inside">
