@@ -1,5 +1,9 @@
 from django.shortcuts import render
+from common.models import Turma
 
 
 def room(request):
-    return render(request, 'messenger/room.html')
+    context = {
+        'turmas': Turma.objects.all(),
+    }
+    return render(request, 'messenger/room.html', context)

@@ -73,6 +73,10 @@ class Disciplina(models.Model):
 
 class Turma(models.Model):
     vagas = models.IntegerField(default=50)
+    disciplina = models.ForeignKey(
+        Disciplina,
+        on_delete=models.CASCADE,
+    )
     professor = models.ForeignKey(
         Usuario,
         on_delete=models.CASCADE,

@@ -12,6 +12,7 @@ channels = "*"
 django-compressor = "*"
 channels-redis = "*"
 pillow = "*"
+djangorestframework = "*"
 
 
 [dev-packages]
