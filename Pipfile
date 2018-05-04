@@ -11,6 +11,7 @@ django = "*"
 channels = "*"
 django-compressor = "*"
 channels-redis = "*"
+pillow = "*"
 
 
 [dev-packages]
