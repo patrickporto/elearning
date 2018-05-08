@@ -18,5 +18,5 @@ from .views import room
 
 
 urlpatterns = [
-    path('', room),
+    path('<int:turma_id>/', room, name='turma'),
 ]

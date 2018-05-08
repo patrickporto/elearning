@@ -22,14 +22,16 @@
         <ul class="collection">
             {% for turma in turmas %}
             <li class="collection-item avatar">
-                <i class="material-icons circle green">insert_chart</i>
-                <span class="title">{{turma.disciplina.nome}}</span>
-                <p>First Line</p>
+                <a href="{% url 'turma' turma.id %}">
+                    <i class="material-icons circle green">insert_chart</i>
+                    <span class="title">{{turma.disciplina.nome}}</span>
+                    <p>First Line</p>
+                </a>
             </li>
             {% endfor %}
         </ul>
     </div>
-    <div class="col s9" id="messenger">
+    <div class="col s9" id="messenger" data-room-name="{{turma_atual.id}}">
         <div class="row">
             <chat-history>
                 <chat-message v-for="(item, index) in chatLog" :key="index"

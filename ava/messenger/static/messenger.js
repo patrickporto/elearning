@@ -12,10 +12,6 @@ Vue.use(VueMoment)
 const app = new Vue({
   data: {
     roomName: 'aula',
-    messageInput: ''
-  },
-  data: {
-    roomName: 'aula',
     messageInput: '',
     chatLog: [],
   },
@@ -23,7 +19,8 @@ const app = new Vue({
     'chat-message': Message,
     'chat-history': History,
   },
-  created() {
+  mounted() {
+    this.roomName = this.$el.getAttribute('data-room-name')
     this.chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${this.roomName}/`)
     this.chatSocket.onmessage = this.receive.bind(this)
     this.chatSocket.onclose = this.close.bind(this)
