@@ -1,24 +1,40 @@
 <template>
-    <div class="message-group" :class="{ 'me': author.me, 'you': !author.me }">
-        <img class="author-photo" :src="author.photo" alt="" :title="author.name">
-        <div class="messages">
-            <div class="message" v-for="(msg, index) in messages" :key="index">
-                <div class="message-inside">
-                    {{ msg.content }}
+    <div>
+        <div class="message-group" :class="{ 'me': author.me, 'you': !author.me }" v-if="type == 'chat_message'">
+            <img class="author-photo" :src="author.photo" alt="" :title="author.name">
+            <div class="messages">
+                <div class="message" v-for="(msg, index) in messages" :key="index">
+                    <div class="message-inside">
+                        {{ msg.content }}
+                    </div>
                 </div>
             </div>
+        </div>
+        <div class="message-action" v-else>
+            <span v-if="type == 'chat_connect'">{{ author.name }} acabou de entrar</span>
+            <span v-if="type == 'chat_disconnect'">{{ author.name }} saiu</span>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    props: ['messages', 'author'],
+    props: ['messages', 'author', 'type', 'sendingDate'],
 }
 </script>
 
 <style lang="sass">
     $background-color: #F7F7F7;
+
+    .message-action {
+        display: block;
+        background: $background-color;
+        border-radius: 4px;
+        padding: 10px;
+        position: relative;
+        margin: 10px 0;
+        text-align: center;
+    }
 
     .message-group {
         padding: 20px;

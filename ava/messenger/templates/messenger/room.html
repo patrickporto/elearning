@@ -34,7 +34,7 @@
     <div class="col s9" id="messenger" data-room-name="{{turma_atual.id}}">
         <div class="row">
             <chat-history>
-                <chat-message v-for="(item, index) in chatLog" :key="index"
+                <chat-message v-for="(item, index) in chatLog" :key="index" :type="item.type"
                     :messages="item.messages" :author="item.author" :sending-date="item.sendingDate" />
             </chat-history>
         </div>

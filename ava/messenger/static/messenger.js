@@ -27,15 +27,16 @@ const app = new Vue({
   },
   methods: {
     receive(event) {
-      const { message, sendingDate, author } = JSON.parse(event.data)
+      const { type, message, sendingDate, author } = JSON.parse(event.data)
       const lastChatLog = this.chatLog[this.chatLog.length - 1]
-      if (lastChatLog && lastChatLog.author.id === author.id) {
+      if (lastChatLog && lastChatLog.type == 'chat_message' && lastChatLog.author.id === author.id) {
         lastChatLog.messages.push({
           content: message,
           sendingDate: sendingDate,
         })
       } else {
         this.chatLog.push({
+          type: type,
           messages: [
             {
               content: message,
