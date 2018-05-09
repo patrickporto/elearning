@@ -91,6 +91,11 @@ class Turma(models.Model):
     periodo = models.CharField(max_length=7)
     inicio = models.DateTimeField()
     fim = models.DateTimeField()
+    alunos = models.ManyToManyField(
+        Usuario,
+        limit_choices_to={'papel': Usuario.ALUNO},
+        related_name='turmas',
+    )
 
     def __str__(self):
         return '{} - {}'.format(self.disciplina, self.professor)
