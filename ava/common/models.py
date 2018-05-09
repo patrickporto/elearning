@@ -64,11 +64,17 @@ class Curso(models.Model):
     nome = models.CharField(max_length=255)
     disciplinas = models.ManyToManyField('Disciplina')
 
+    def __str__(self):
+        return self.nome
+
 
 class Disciplina(models.Model):
     nome = models.CharField(max_length=255)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.nome
 
 
 class Turma(models.Model):
@@ -85,3 +91,6 @@ class Turma(models.Model):
     periodo = models.CharField(max_length=7)
     inicio = models.DateTimeField()
     fim = models.DateTimeField()
+
+    def __str__(self):
+        return '{} - {}'.format(self.disciplina, self.professor)
