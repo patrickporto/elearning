@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block main %}
-    <v-toolbar dark color="primary">
+    <v-toolbar dark color="red">
         <v-toolbar-side-icon></v-toolbar-side-icon>
         <v-toolbar-title class="white--text">Ambiente de Graduação</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -12,4 +12,81 @@
     <v-container fluid fill-height>
         {% block content %}{% endblock %}
     </v-container>
+    <v-footer height="auto">
+        <v-card flat tile class="flex">
+            <v-card-title class="red white--text">
+            <strong class="subheading">O melhor centro universitário do Rio, segundo o MEC.</strong>
+            <v-spacer></v-spacer>
+            <v-btn icon dark class="mx-3" href="http://pt-br.facebook.com/UniCarioca">
+                <v-icon size="24px">fab fa-facebook</v-icon>
+            </v-btn>
+            <v-btn icon dark class="mx-3" href="http://twitter.com/UniCarioca">
+                <v-icon size="24px">fab fa-twitter</v-icon>
+            </v-btn>
+            <v-btn icon dark class="mx-3" href="https://plus.google.com/110284487250877513543">
+                <v-icon size="24px">fab fa-google-plus</v-icon>
+            </v-btn>
+            <v-btn icon dark class="mx-3" href="http://www.youtube.com/tvunicarioca">
+                <v-icon size="24px">fab fa-youtube</v-icon>
+            </v-btn>
+            <v-btn icon dark class="mx-3" href="http://www.flickr.com/photos/unicariocacentrouniversitario/">
+                <v-icon size="24px">fab fa-flickr</v-icon>
+            </v-btn>
+            <v-btn icon dark class="mx-3" href="https://pt.foursquare.com/unicarioca">
+                <v-icon size="24px">fab fa-forsquare</v-icon>
+            </v-btn>
+            </v-card-title>
+            <v-card-text class="grey lighten-3">
+            <v-layout>
+                <v-flex xs3>
+                    <span class="body-2">RIO COMPRIDO</span>
+                    <p>
+                        <v-icon size="18px" class="mr-3">fas fa-home</v-icon>
+                        Av. Paulo de Frontin, 568 - Rio Comprido, Rio de Janeiro, RJ
+                    </p>
+                    <p>
+                        <v-icon size="18px" class="mr-3">fas fa-phone</v-icon>
+                        <a href="tel:(21) 2563-1919">(21) 2563-1919</a>
+                    </p>
+                </v-flex>
+                <v-flex xs3>
+                    <span class="body-2">MÉIER</span>
+                    <p>
+                        <v-icon size="18px" class="mr-3">fas fa-home</v-icon>
+                        Rua Venceslau, 315 - Méier, Rio de Janeiro, RJ
+                    </p>
+                    <p>
+                        <v-icon size="18px" class="mr-3">fas fa-phone</v-icon>
+                        <a href="tel:(21) 2563-1919">(21) 2563-1919</a>
+                    </p>
+                </v-flex>
+                <v-flex xs3>
+                    <span class="body-2">JACAREPAGUÁ</span>
+                    <p>
+                        <v-icon size="18px" class="mr-3">fas fa-home</v-icon>
+                        Estrada de Jacarepaguá, 6816 - Jacarepaguá, Rio de Janeiro, RJ
+                    </p>
+                    <p>
+                        <v-icon size="18px" class="mr-3">fas fa-phone</v-icon>
+                        <a href="tel:(21) 2563-1919">(21) 2563-1919</a>
+                    </p>
+                </v-flex>
+                <v-flex xs3>
+                    <span class="body-2">BENTO RIBEIRO</span>
+                    <p>
+                        <v-icon size="18px" class="mr-3">fas fa-home</v-icon>
+                        Rua João Vicente, 1355 - Bento Ribeiro, Rio de Janeiro, RJ
+                    </p>
+                    <p>
+                        <v-icon size="18px" class="mr-3">fas fa-phone</v-icon>
+                        <a href="tel:(21) 2563-1919">(21) 2563-1919</a>
+                    </p>
+                </v-flex>
+            </v-layout>
+            </v-card-text>
+            <v-card-actions class="grey lighten-2 justify-center">
+                &copy;2018 — <strong>UniCarioca. Todos os direitos reservados.</strong>
+            </v-card-actions>
+        </v-card>
+    </v-footer>
 {% endblock %}
