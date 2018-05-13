@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <v-toolbar dark color="primary">
+        <v-toolbar-side-icon></v-toolbar-side-icon>
+        <v-toolbar-title class="white--text">Ambiente de Graduação</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon>
+            <v-icon>more_vert</v-icon>
+        </v-btn>
+    </v-toolbar>
+    <v-container fluid fill-height>
+        {% block content %}{% endblock %}
+    </v-container>
+{% endblock %}

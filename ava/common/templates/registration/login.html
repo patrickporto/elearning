@@ -1,38 +1,43 @@
 {% extends "base.html" %}
 
-{% block content %}
-
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>Your account doesn't have access to this page. To proceed,
-    please login with an account that has access.</p>
-    {% else %}
-    <p>Please login to see this page.</p>
-    {% endif %}
-{% endif %}
-
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-
-{# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-
+{% block main %}
+    <v-layout align-center justify-center>
+        <v-flex xs12 sm8 md4>
+            <v-card class="elevation-12">
+                
+            <v-toolbar dark color="primary">
+                <v-toolbar-title>Autenticação</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+                <v-form id="form-login" method="post" action="{% url 'login' %}">
+                    {% if next %}
+                        {% if user.is_authenticated %}
+                        <v-alert :value="true" type="warning">
+                            Você não pode acessar esta página. Por favor, faça login com um
+                            usuário que pode acessá-la
+                        </v-alert>     
+                        {% else %}
+                        <v-alert :value="true" type="warning">
+                            Por favor, faça login para acessar esta página.
+                        </v-alert>
+                        {% endif %}
+                    {% endif %}
+                    {% if form.errors %}
+                    <v-alert :value="true" type="error">
+                        Seu usuário e senha não são válidos. Por favor, tente novamente.
+                    </v-alert>
+                    {% endif %}
+                    {% csrf_token %}
+                    <v-text-field prepend-icon="person" name="username" label="E-mail" type="email"></v-text-field>
+                    <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password"></v-text-field>
+                    <input type="hidden" name="next" value="{{ next }}" />
+                </v-form>
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" type="submit" form="form-login">Login</v-btn>
+            </v-card-actions>
+            </v-card>
+        </v-flex>
+        </v-layout>
 {% endblock %}
