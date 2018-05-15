@@ -30,7 +30,7 @@
         </v-list>
     </v-flex>
     <v-flex xs8>
-        <ava-messenger room-name="{{turma_atual.id}}" />
+        <ava-messenger room-name="{{turma_atual.id}}" room-title="{{turma_atual.disciplina.nome}}" papel="{{request.user.papel}}" />
     </v-flex>
 </v-layout row>
 {% endblock %}

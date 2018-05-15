@@ -1,9 +1,24 @@
 <template>
     <div>
-        <div class="row">
+        <v-card class="card--flex-toolbar">
+            <v-toolbar card prominent>
+                <v-toolbar-title class="body-2 grey--text">{{roomTitle}}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                    <v-menu bottom left>
+                        <v-btn slot="activator" icon>
+                        <v-icon>fas fa-tasks</v-icon>
+                        </v-btn>
+                        <v-list>
+                            <v-list-tile>
+                                <v-list-tile-title>Questão</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list>
+                    </v-menu>
+            </v-toolbar>
+            <v-divider></v-divider>
+        </v-card>
+        <v-card-text>
             <chat-history :chat-log="chatLog" />
-        </div>
-        <div class="row">
             <v-text-field
                 v-model="messageContent"
                 @keyup.enter="send()"
@@ -12,7 +27,7 @@
                 multi-line
                 single-line>
             </v-text-field>
-        </div>
+        </v-card-text>
     </div>
 </template>
 
@@ -22,7 +37,7 @@ import moment from 'moment';
 
 
 export default {
-    props: ['roomName'],
+    props: ['roomName', 'roomTitle', 'papel'],
     data() {
         return {
             messageContent: '',
