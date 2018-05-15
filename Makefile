@@ -10,3 +10,6 @@ run-debug:
 
 migrate:
 	$(MANAGE) migrate
+
+start-redis:
+	docker run -p 6379:6379 -d redis
