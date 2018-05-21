@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from .models import ChatMessagem
+from .models import ChatMessagem, Curtida
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -16,8 +16,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         for mensagem in ChatMessagem.objects.filter(turma=self.room_name).order_by('data_criacao'):
             await self.send(text_data=json.dumps({
                 'type': 'chat_message',
+                'id': mensagem.id,
                 'message': mensagem.mensagem,
                 'sendingDate': mensagem.data_criacao.isoformat(),
+                'likes': mensagem.curtidas.count(),
                 'author': {
                     'me': self.scope['user'].id == mensagem.author.id,
                     'id': mensagem.author.id,
@@ -60,38 +62,73 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        sending_date = text_data_json['sendingDate']
-        logged_user = self.scope['user']
+        event_type = text_data_json['type']
+        if event_type == 'chat_message':
+            message = text_data_json['message']
+            sending_date = text_data_json['sendingDate']
+            logged_user = self.scope['user']
 
-        ChatMessagem.objects.create(
-            turma_id=int(self.room_name),
-            author=logged_user,
-            mensagem=message,
-        )
+            message_id = ChatMessagem.objects.create(
+                turma_id=int(self.room_name),
+                author=logged_user,
+                mensagem=message,
+            )
 
-        await self.channel_layer.group_send(
-            self.room_name,
-            {
-                'type': 'chat_message',
-                'message': message,
-                'sending_date': sending_date,
-                'author': {
-                    'id': logged_user.id,
-                    'name': logged_user.nome,
-                    'photo': logged_user.foto.url,
-                },
-            }
-        )
+            await self.channel_layer.group_send(
+                self.room_name,
+                {
+                    'type': 'chat_message',
+                    'id': message_id,
+                    'message': message,
+                    'likes': 0,
+                    'sending_date': sending_date,
+                    'author': {
+                        'id': logged_user.id,
+                        'name': logged_user.nome,
+                        'photo': logged_user.foto.url,
+                    },
+                }
+            )
+        elif event_type == 'chat_like':
+            message_id = text_data_json['messageId']
+            logged_user = self.scope['user']
+            try:
+                Curtida.objects.get(mensagem_id=int(message_id), autor=logged_user).delete()
+                likes = -1
+            except Curtida.DoesNotExist:
+                Curtida.objects.create(
+                    mensagem_id=int(message_id),
+                    autor=logged_user,
+                )
+                likes = 1
+
+
+            await self.channel_layer.group_send(
+                self.room_name,
+                {
+                    'type': 'chat_like',
+                    'message_id': message_id,
+                    'likes': likes,
+                    'author': {
+                        'id': logged_user.id,
+                        'name': logged_user.nome,
+                        'photo': logged_user.foto.url,
+                    },
+                }
+            )
 
     async def chat_message(self, event):
         message = event['message']
         sending_date = event['sending_date']
         author = event['author']
+        message_id = event['message_id']
+        likes = event['likes']
 
         await self.send(text_data=json.dumps({
             'type': 'chat_message',
+            'id': message_id,
             'message': message,
+            'likes': likes,
             'sendingDate': sending_date,
             'author': {
                 'me': self.scope['user'].id == author['id'],
@@ -106,4 +143,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type': event_type,
             'author': author,
+        }))
+
+    async def chat_like(self, event):
+        author = event['author']
+        message_id = event['message_id']
+        likes = event['likes']
+
+        await self.send(text_data=json.dumps({
+            'type': 'chat_like',
+            'author': author,
+            'likes': likes,
+            'messageId': message_id,
         }))

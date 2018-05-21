@@ -18,15 +18,8 @@
             <v-divider></v-divider>
         </v-card>
         <v-card-text>
-            <chat-history :chat-log="chatLog" />
-            <v-text-field
-                v-model="messageContent"
-                @keyup.enter="send()"
-                max="120"
-                full-width
-                multi-line
-                single-line>
-            </v-text-field>
+            <chat-history :chat-log="chatLog" v-on:like="like" />
+            <input type="text" class="message-input" v-model="messageContent" @keyup.enter="send()" placeholder="diga algo..." />
         </v-card-text>
     </div>
 </template>
@@ -54,40 +47,76 @@ export default {
     },
     methods: {
         receive(event) {
-        const { type, message, sendingDate, author } = JSON.parse(event.data)
-        const lastChatLog = this.chatLog[this.chatLog.length - 1]
-        if (lastChatLog && lastChatLog.type === type && lastChatLog.author.id === author.id) {
-            lastChatLog.messages.push({
-            content: message,
-            sendingDate: sendingDate,
-            })
-        } else {
-            this.chatLog.push({
-            type: type,
-            messages: [
-                {
-                content: message,
-                sendingDate: sendingDate,
-                }
-            ],
-            author,
-            })
+            const data = JSON.parse(event.data)
+            if (data.type == 'chat_like') {
+                this.handleLike(data)
+            } else {
+                this.handleMsg(data)
+            }
+        },
+        handleLike({ messageId, likes }) {
+            const messages = this.chatLog.reduce((list, log) => list.concat(log.messages), [])
+            const msg = messages.find((msg) => msg.id == messageId)
+            msg.likes += likes;
+        },
+        handleMsg({ type, id, message, sendingDate, author, likes }) {
+            const lastChatLog = this.chatLog[this.chatLog.length - 1]
+            if (lastChatLog && lastChatLog.type === type && lastChatLog.author.id === author.id) {
+                lastChatLog.messages.push({
+                    id,
+                    content: message,
+                    sendingDate,
+                    likes,
+                })
+            } else {
+                this.chatLog.push({
+                type: type,
+                messages: [
+                    {
+                        id,
+                        content: message,
+                        sendingDate,
+                        likes,
+                    }
+                ],
+                author,
+                })
+            }
+            const objDiv = document.getElementById("history");
+            objDiv.scrollTop = objDiv.scrollHeight;
+        },
+        close(event) {
+            console.error('Chat socket closed unexpectedly');
+        },
+        send() {
+            var message = this.messageContent;
+            if (!message.trim()) return;
+            this.chatSocket.send(JSON.stringify({
+                'type': 'chat_message',
+                'message': message,
+                'sendingDate': moment().format(),
+            }));
+            this.messageContent = '';
+        },
+        like(messageId) {
+            this.chatSocket.send(JSON.stringify({
+                'type': 'chat_like',
+                'messageId': messageId,
+                'sendingDate': moment().format(),
+            }));
         }
-        const objDiv = document.getElementById("history");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    },
-    close(event) {
-      console.error('Chat socket closed unexpectedly');
-    },
-    send() {
-      var message = this.messageContent;
-      if (!message.trim()) return;
-      this.chatSocket.send(JSON.stringify({
-          'message': message,
-          'sendingDate': moment().format(),
-      }));
-      this.messageContent = '';
     }
-  }
 }
 </script>
+
+<style lang="sass">
+    .message-input {
+        background: #800000;
+        border-radius: 4px;
+        color: #ffffff;
+        overflow-y: auto;
+        padding: 5px 15px;
+        margin: 8px 0;
+        width: 100%;
+    }
+</style>

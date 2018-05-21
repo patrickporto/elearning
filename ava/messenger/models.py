@@ -11,3 +11,8 @@ class ChatMessagem(models.Model):
 
     def __str__(self):
         return self.message
+
+
+class Curtida(models.Model):
+    autor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    mensagem = models.ForeignKey('ChatMessagem', on_delete=models.CASCADE, related_name='curtidas')
