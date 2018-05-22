@@ -11,17 +11,19 @@
     <v-flex xs4>
         <v-list>
             <v-subheader>Dúvidas</v-subheader>
+            {% for turma in turmas %}
             <div>
-                <v-list-tile avatar href="{% url 'duvidas' turma_atual.id %}">
+                <v-list-tile avatar href="{% url 'duvidas' turma.id %}">
                 <v-list-tile-action>
                     <v-icon>fas fa-question-circle</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                    <v-list-tile-title>{{turma_atual.disciplina.nome}}</v-list-tile-title>
+                    <v-list-tile-title>{{turma.disciplina.nome}}</v-list-tile-title>
                 </v-list-tile-content>
                 </v-list-tile>
                 <v-divider></v-divider>
             </div>
+            {% endfor %}
         </v-list>
         <v-list two-line>
             <v-subheader>Turmas</v-subheader>
