@@ -44,7 +44,6 @@ INSTALLED_APPS = [
 
     'common',
     'messenger',
-    'questionario',
 ]
 
 MIDDLEWARE = [

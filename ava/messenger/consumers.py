@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from .models import ChatMessagem, Curtida
+from .models import ChatMessagem, Curtida, Duvida
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -15,7 +15,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         for mensagem in ChatMessagem.objects.filter(turma=self.room_name).order_by('data_criacao'):
             await self.send(text_data=json.dumps({
-                'type': 'chat_message',
+                'type': mensagem.tipo,
                 'id': mensagem.id,
                 'message': mensagem.mensagem,
                 'sendingDate': mensagem.data_criacao.isoformat(),
@@ -64,64 +64,76 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         event_type = text_data_json['type']
         if event_type == 'chat_message':
-            message = text_data_json['message']
-            sending_date = text_data_json['sendingDate']
-            logged_user = self.scope['user']
-
-            message_id = ChatMessagem.objects.create(
-                turma_id=int(self.room_name),
-                author=logged_user,
-                mensagem=message,
-            )
-
-            await self.channel_layer.group_send(
-                self.room_name,
-                {
-                    'type': 'chat_message',
-                    'id': message_id,
-                    'message': message,
-                    'likes': 0,
-                    'sending_date': sending_date,
-                    'author': {
-                        'id': logged_user.id,
-                        'name': logged_user.nome,
-                        'photo': logged_user.foto.url,
-                    },
-                }
-            )
+            await self.receive_chat_message(text_data_json)
         elif event_type == 'chat_like':
-            message_id = text_data_json['messageId']
-            logged_user = self.scope['user']
-            try:
-                Curtida.objects.get(mensagem_id=int(message_id), autor=logged_user).delete()
-                likes = -1
-            except Curtida.DoesNotExist:
-                Curtida.objects.create(
-                    mensagem_id=int(message_id),
-                    autor=logged_user,
-                )
-                likes = 1
+            await self.receive_chat_like(text_data_json)
+        elif event_type == 'chat_add_question':
+            await self.receive_chat_add_question(text_data_json)
+    
+    async def receive_chat_message(self, text_data_json):
+        message = text_data_json['message']
+        sending_date = text_data_json['sendingDate']
+        logged_user = self.scope['user']
 
-
-            await self.channel_layer.group_send(
-                self.room_name,
-                {
-                    'type': 'chat_like',
-                    'message_id': message_id,
-                    'likes': likes,
-                    'author': {
-                        'id': logged_user.id,
-                        'name': logged_user.nome,
-                        'photo': logged_user.foto.url,
-                    },
-                }
+        mensagem = ChatMessagem.objects.create(
+            turma_id=int(self.room_name),
+            author=logged_user,
+            mensagem=message,
+        )
+        await self.channel_layer.group_send(
+            self.room_name,
+            {
+                'type': 'chat_message',
+                'id': mensagem.id,
+                'message': message,
+                'likes': 0,
+                'sending_date': sending_date,
+                'author': {
+                    'id': logged_user.id,
+                    'name': logged_user.nome,
+                    'photo': logged_user.foto.url,
+                },
+            }
+        )
+    
+    async def receive_chat_like(self, text_data_json):
+        message_id = text_data_json['messageId']
+        logged_user = self.scope['user']
+        try:
+            Curtida.objects.get(mensagem_id=int(message_id), autor=logged_user).delete()
+            likes = -1
+        except Curtida.DoesNotExist:
+            Curtida.objects.create(
+                mensagem_id=int(message_id),
+                autor=logged_user,
             )
+            likes = 1
+        await self.channel_layer.group_send(
+            self.room_name,
+            {
+                'type': 'chat_like',
+                'message_id': message_id,
+                'likes': likes,
+                'author': {
+                    'id': logged_user.id,
+                    'name': logged_user.nome,
+                    'photo': logged_user.foto.url,
+                },
+            }
+        )
+
+    async def receive_chat_add_question(self, text_data_json):
+        message_id = text_data_json['messageId']
+        Duvida.objects.get_or_create(
+            mensagem_id=int(message_id),
+            turma_id=int(self.room_name),
+        )
 
     async def chat_message(self, event):
         message = event['message']
         sending_date = event['sending_date']
         author = event['author']
-        message_id = event['message_id']
+        message_id = event['id']
         likes = event['likes']
 
         await self.send(text_data=json.dumps({

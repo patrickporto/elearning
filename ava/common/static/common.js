@@ -8,7 +8,6 @@ import VueMoment from 'vue-moment'
 Vue.use(Vuetify)
 Vue.use(VueMoment)
 
-
 const app = new Vue({
   components: {
     'ava-messenger': Messenger,

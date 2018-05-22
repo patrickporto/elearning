@@ -1,6 +1,11 @@
+from asgiref.sync import async_to_sync
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.decorators import method_decorator
+from django.views import View
+from channels.layers import get_channel_layer
 from common.models import Turma, Usuario
+from .models import Duvida, ChatMessagem
 
 
 @login_required
@@ -19,3 +24,52 @@ def room(request, turma_id=None):
     else:
         context['turma_atual'] = qs.get(pk=turma_id)
     return render(request, 'messenger/room.html', context)
+
+
+@method_decorator(login_required, name='dispatch')
+class Duvidas(View):
+    template_name = 'messenger/duvidas.html'
+    def get(self, request, turma_id):
+        if request.user.papel == Usuario.ALUNO:
+            qs = Turma.objects.filter(alunos=request.user)
+        elif request.user.papel == Usuario.PROFESSOR:
+            qs = Turma.objects.filter(professor=request.user)
+        else:
+            qs = Turma.objects.all()
+        context = {
+            'turma_atual': get_object_or_404(Turma, pk=turma_id),
+            'turmas': qs,
+            'duvidas': Duvida.objects.filter(turma_id=turma_id)
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, turma_id):
+        answers = []
+        for key, value in request.POST.items():
+            if key.startswith('duvida-'):
+                duvida = Duvida.objects.get(pk=int(key[7:]))
+                duvida.resposta = value
+                duvida.save()
+                answers.append(duvida)
+        mensagem = ChatMessagem.objects.create(
+            tipo='duvidas',
+            turma_id=turma_id,
+            author=request.user,
+            mensagem='\n'.join([';'.join([str(answer.mensagem.id), answer.mensagem.mensagem, answer.resposta])
+                                for answer in answers]),
+        )
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.send)(str(turma_id), {
+            'type': mensagem.tipo,
+            'id': mensagem.id,
+            'message': mensagem.mensagem,
+            'sendingDate': mensagem.data_criacao.isoformat(),
+            'likes': mensagem.curtidas.count(),
+            'author': {
+                'me': request.user.id == mensagem.author.id,
+                'id': mensagem.author.id,
+                'name': mensagem.author.nome,
+                'photo': mensagem.author.foto.url,
+            },
+        })
+        return redirect('duvidas', turma_id)

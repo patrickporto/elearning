@@ -1,7 +1,7 @@
 <template>
     <div id="history" class="history-container">
         <chat-message v-for="(item, index) in chatLog" :key="index" :type="item.type"
-            :messages="item.messages" :author="item.author" :sending-date="item.sendingDate" v-on:like="like"  />
+            :messages="item.messages" :author="item.author" :sending-date="item.sendingDate" v-on:like="like" v-on:reply="reply"  />
     </div>
 </template>
 
@@ -14,8 +14,11 @@ export default {
         'chat-message': Message,
     },
     methods: {
-        like(messageId) {
-            this.$emit('like', messageId)
+        like(msg) {
+            this.$emit('like', msg)
+        },
+        reply(msg) {
+            this.$emit('reply', msg)
         }
     }
 }

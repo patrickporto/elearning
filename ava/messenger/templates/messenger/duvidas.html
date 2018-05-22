@@ -11,19 +11,17 @@
     <v-flex xs4>
         <v-list>
             <v-subheader>Dúvidas</v-subheader>
-            {% for turma in turmas %}
             <div>
-                <v-list-tile avatar href="{% url 'duvidas' turma.id %}">
+                <v-list-tile avatar href="{% url 'duvidas' turma_atual.id %}">
                 <v-list-tile-action>
                     <v-icon>fas fa-question-circle</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                    <v-list-tile-title>{{turma.disciplina.nome}}</v-list-tile-title>
+                    <v-list-tile-title>{{turma_atual.disciplina.nome}}</v-list-tile-title>
                 </v-list-tile-content>
                 </v-list-tile>
                 <v-divider></v-divider>
             </div>
-            {% endfor %}
         </v-list>
         <v-list two-line>
             <v-subheader>Turmas</v-subheader>
@@ -46,7 +44,29 @@
         </v-list>
     </v-flex>
     <v-flex xs8>
-        <ava-messenger room-name="{{turma_atual.id}}" room-title="{{turma_atual.disciplina.nome}}" papel="{{request.user.papel}}" />
+        <v-card>
+        <v-toolbar dark color="red">
+            <v-toolbar-title>Dúvidas</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+            <v-form id="form-questions" method="post">
+                {% csrf_token %} 
+                {% for duvida in duvidas %}
+                    <v-text-field
+                    name="duvida-{{duvida.id}}"
+                    label="{{duvida.mensagem.mensagem}}"
+                    value="{{duvida.resposta|default_if_none:""}}"
+                    full-width
+                    multi-line
+                    ></v-text-field>
+                {% endfor %}
+            </v-form>
+        </v-card-text>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red" dark type="submit" form="form-questions">Enviar</v-btn>
+        </v-card-actions>
+        </v-card>
     </v-flex>
 </v-layout row>
 {% endblock %}

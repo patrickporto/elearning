@@ -3,9 +3,21 @@
         <div class="message-group" :class="{ 'me': author.me, 'you': !author.me }" v-if="type == 'chat_message'">
             <img class="author-photo" :src="author.photo" alt="" :title="author.name">
             <div class="messages">
-                <div class="message" v-for="(msg, index) in messages" :key="index" @click="like(msg)">
+                <div class="message" v-for="msg of messages" :key="msg.id"
+                     @mouseover="messageSelected = msg.id" @mouseleave="messageSelected = undefined">
+                    <div class="message-actions" v-if="messageSelected == msg.id">
+                        <div class="btn-group">
+                            <v-btn icon @click="like(msg)">
+                                <v-icon v-if="msg.likes > 0">fas fa-heart</v-icon>
+                                <v-icon v-else>far fa-heart</v-icon>
+                            </v-btn>
+                            <v-btn icon @click="reply(msg)">
+                                <v-icon>far fa-comments</v-icon>
+                            </v-btn>
+                        </div>
+                    </div>
                     <div class="message-inside">
-                        <div>
+                        <div :id="'msg-' + msg.id">
                             {{ msg.content }}
                         </div>
                         <div class="message-reactions" v-if="msg.likes > 0">
@@ -15,19 +27,56 @@
                 </div>
             </div>
         </div>
-        <div class="message-action" v-else>
+        <div v-else-if="type === 'duvidas'">
+            <a class="message-answers" v-for="answer of answers" :key="answer.id":href="'#msg-' + answer.id">
+                <div class="message-question">{{answer.question}}</div>
+                <div class="message-answer">{{answer.answer}}</div>
+            </a>
+        </div>
+        <div class="message-event" v-else>
             <span v-if="type == 'chat_connect'">{{ author.name }} acabou de entrar</span>
             <span v-if="type == 'chat_disconnect'">{{ author.name }} saiu</span>
         </div>
+        <v-snackbar v-model="snackbar">
+            Dúvida salva com sucesso
+            <v-btn flat color="pink" @click.native="snackbar = false">Fechar</v-btn>
+        </v-snackbar>
     </div>
 </template>
 
 <script>
 export default {
     props: ['messages', 'author', 'type', 'sendingDate'],
+    data() {
+        return {
+            messageSelected: undefined,
+            snackbar: false,
+        }
+    },
+    computed: {
+        answers() {
+            return this.messages[0].content.split('\n').map((msg) => {
+                const row = msg.split(';')
+                return {
+                    id: row[0],
+                    question: row[1],
+                    answer: row[2],
+                }
+            })
+        }
+    },
     methods: {
         like(msg) {
             this.$emit('like', msg.id)
+        },
+        reply(msg) {
+            this.snackbar = true
+            this.$emit('reply', msg.id)
+        },
+        duvidas: function (value) {
+            if (!value) return ''
+            const rows = duvidas.toString().split('\n');
+            return rows.split(';')
         }
     }
 }
@@ -38,7 +87,13 @@ export default {
     $me-bg: #7A7C7E;
     $you-bg: #800000;
 
-    .message-action {
+    .btn-group {
+        background: #CB061D;
+        display: inline-block;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .message-event {
         display: block;
         color: #A0131C;
         border-radius: 4px;
@@ -47,6 +102,19 @@ export default {
         margin: 10px 0;
         text-align: center;
         font-weight: bold;
+    }
+
+    .message-answers {
+        background: #CB061D;
+        color: #fff;
+        display: block;
+        padding: 20px;
+        text-decoration: none;
+    }
+
+    .message-question {
+        font-weight: bold;
+        color: #fff;
     }
 
     .message-reactions {

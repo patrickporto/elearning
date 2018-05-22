@@ -18,7 +18,7 @@
             <v-divider></v-divider>
         </v-card>
         <v-card-text>
-            <chat-history :chat-log="chatLog" v-on:like="like" />
+            <chat-history :chat-log="chatLog" v-on:like="like" v-on:reply="reply" />
             <input type="text" class="message-input" v-model="messageContent" @keyup.enter="send()" placeholder="diga algo..." />
         </v-card-text>
     </div>
@@ -103,6 +103,12 @@ export default {
                 'type': 'chat_like',
                 'messageId': messageId,
                 'sendingDate': moment().format(),
+            }));
+        },
+        reply(messageId) {
+            this.chatSocket.send(JSON.stringify({
+                'type': 'chat_add_question',
+                'messageId': messageId,
             }));
         }
     }
