@@ -63,7 +63,7 @@ class Duvidas(View):
             'type': mensagem.tipo,
             'id': mensagem.id,
             'message': mensagem.conteudo,
-            'sendingDate': mensagem.data_criacao.isoformat(),
+            'sendingDate': mensagem.data_publicacao.isoformat(),
             'likes': mensagem.curtidas.count(),
             'author': {
                 'me': request.user.id == mensagem.autor.id,

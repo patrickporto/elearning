@@ -13,12 +13,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
-        for mensagem in Mensagem.objects.filter(turma=self.room_name).order_by('data_criacao'):
+        for mensagem in Mensagem.objects.filter(turma=self.room_name).order_by('data_publicacao'):
             await self.send(text_data=json.dumps({
                 'type': mensagem.tipo,
                 'id': mensagem.id,
                 'message': mensagem.conteudo,
-                'sendingDate': mensagem.data_criacao.isoformat(),
+                'sendingDate': mensagem.data_publicacao.isoformat(),
                 'likes': mensagem.curtidas.count(),
                 'author': {
                     'me': self.scope['user'].id == mensagem.autor.id,
