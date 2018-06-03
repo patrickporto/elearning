@@ -5,7 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from channels.layers import get_channel_layer
 from common.models import Turma, Usuario
-from .models import Duvida, ChatMessagem
+from .models import Duvida, Mensagem
 
 
 @login_required
@@ -51,25 +51,25 @@ class Duvidas(View):
                 duvida.resposta = value
                 duvida.save()
                 answers.append(duvida)
-        mensagem = ChatMessagem.objects.create(
+        mensagem = Mensagem.objects.create(
             tipo='duvidas',
             turma_id=turma_id,
-            author=request.user,
-            mensagem='\n'.join([';'.join([str(answer.mensagem.id), answer.mensagem.mensagem, answer.resposta])
+            autor=request.user,
+            conteudo='\n'.join([';'.join([str(answer.mensagem.id), answer.mensagem.mensagem, answer.resposta])
                                 for answer in answers]),
         )
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.send)(str(turma_id), {
             'type': mensagem.tipo,
             'id': mensagem.id,
-            'message': mensagem.mensagem,
+            'message': mensagem.conteudo,
             'sendingDate': mensagem.data_criacao.isoformat(),
             'likes': mensagem.curtidas.count(),
             'author': {
-                'me': request.user.id == mensagem.author.id,
-                'id': mensagem.author.id,
-                'name': mensagem.author.nome,
-                'photo': mensagem.author.foto.url,
+                'me': request.user.id == mensagem.autor.id,
+                'id': mensagem.autor.id,
+                'name': mensagem.autor.nome,
+                'photo': mensagem.autor.foto.url,
             },
         })
         return redirect('duvidas', turma_id)

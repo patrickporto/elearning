@@ -70,6 +70,7 @@ class Curso(models.Model):
 
 class Disciplina(models.Model):
     nome = models.CharField(max_length=255)
+    carga_horaria = models.IntegerField()
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
 

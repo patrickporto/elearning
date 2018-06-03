@@ -1,6 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from .models import ChatMessagem, Curtida, Duvida
+from .models import Mensagem, Curtida, Duvida
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -13,18 +13,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
-        for mensagem in ChatMessagem.objects.filter(turma=self.room_name).order_by('data_criacao'):
+        for mensagem in Mensagem.objects.filter(turma=self.room_name).order_by('data_criacao'):
             await self.send(text_data=json.dumps({
                 'type': mensagem.tipo,
                 'id': mensagem.id,
-                'message': mensagem.mensagem,
+                'message': mensagem.conteudo,
                 'sendingDate': mensagem.data_criacao.isoformat(),
                 'likes': mensagem.curtidas.count(),
                 'author': {
-                    'me': self.scope['user'].id == mensagem.author.id,
-                    'id': mensagem.author.id,
-                    'name': mensagem.author.nome,
-                    'photo': mensagem.author.foto.url,
+                    'me': self.scope['user'].id == mensagem.autor.id,
+                    'id': mensagem.autor.id,
+                    'name': mensagem.autor.nome,
+                    'photo': mensagem.autor.foto.url,
                 },
             }))
             
@@ -75,10 +75,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sending_date = text_data_json['sendingDate']
         logged_user = self.scope['user']
 
-        mensagem = ChatMessagem.objects.create(
+        mensagem = Mensagem.objects.create(
             turma_id=int(self.room_name),
-            author=logged_user,
-            mensagem=message,
+            autor=logged_user,
+            conteudo=message,
         )
         await self.channel_layer.group_send(
             self.room_name,
