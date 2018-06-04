@@ -12,6 +12,7 @@ services:
       - ./ava:/opt/app/ava
       - ./.venv:/usr/lib/pypy
     environment:
+      - REDIS_HOST=redis
       - MYSQL_DATABASE=ava
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=adminpass
