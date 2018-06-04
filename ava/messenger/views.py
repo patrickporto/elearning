@@ -55,7 +55,7 @@ class Duvidas(View):
             tipo='duvidas',
             turma_id=turma_id,
             autor=request.user,
-            conteudo='\n'.join([';'.join([str(answer.mensagem.id), answer.mensagem.mensagem, answer.resposta])
+            conteudo='\n'.join([';'.join([str(answer.mensagem.id), answer.mensagem.conteudo, answer.resposta])
                                 for answer in answers]),
         )
         channel_layer = get_channel_layer()
