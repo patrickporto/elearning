@@ -168,3 +168,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'likes': likes,
             'messageId': message_id,
         }))
+
+    async def duvidas(self, event):
+        await self.send(text_data=json.dumps(event))

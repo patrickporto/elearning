@@ -59,8 +59,8 @@ class Duvidas(View):
                                 for answer in answers]),
         )
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.send)(str(turma_id), {
-            'type': mensagem.tipo,
+        async_to_sync(channel_layer.group_send)(str(turma_id), {
+            'type': 'duvidas',
             'id': mensagem.id,
             'message': mensagem.conteudo,
             'sendingDate': mensagem.data_publicacao.isoformat(),
