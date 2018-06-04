@@ -8,44 +8,7 @@
 
 {% block content %}
 <v-layout row>
-    <v-flex xs4>
-        <v-list>
-            <v-subheader>Dúvidas</v-subheader>
-            {% for turma in turmas %}
-            <div>
-                <v-list-tile avatar href="{% url 'duvidas' turma.id %}">
-                <v-list-tile-action>
-                    <v-icon>fas fa-question-circle</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                    <v-list-tile-title>{{turma.disciplina.nome}}</v-list-tile-title>
-                </v-list-tile-content>
-                </v-list-tile>
-                <v-divider></v-divider>
-            </div>
-            {% endfor %}
-        </v-list>
-        <v-list two-line>
-            <v-subheader>Turmas</v-subheader>
-            {% for turma in turmas %}
-            <div>
-                {% if not forloop.first %}
-                <v-divider></v-divider>
-                {% endif %}
-                <v-list-tile avatar href="{% url 'turma' turma.id %}">
-                <v-list-tile-avatar>
-                    <img src="{{turma.professor.foto.url}}">
-                </v-list-tile-avatar>
-                <v-list-tile-content>
-                    <v-list-tile-title>{{turma.disciplina.nome}}</v-list-tile-title>
-                    <v-list-tile-sub-title>{{turma.professor.nome}}</v-list-tile-sub-title>
-                </v-list-tile-content>
-                </v-list-tile>
-            </div>
-            {% endfor %}
-        </v-list>
-    </v-flex>
-    <v-flex xs8>
+    <v-flex xs12>
         <ava-messenger room-name="{{turma_atual.id}}" room-title="{{turma_atual.disciplina.nome}}" papel="{{request.user.papel}}" />
     </v-flex>
 </v-layout row>

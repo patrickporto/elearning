@@ -9,6 +9,9 @@ Vue.use(Vuetify)
 Vue.use(VueMoment)
 
 const app = new Vue({
+  data: {
+    navigationDrawer: false
+  },
   components: {
     'ava-messenger': Messenger,
   }

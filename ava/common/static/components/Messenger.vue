@@ -1,19 +1,8 @@
 <template>
     <div>
         <v-card class="card--flex-toolbar">
-            <v-toolbar card prominent>
-                <v-toolbar-title class="body-2 grey--text">{{roomTitle}}</v-toolbar-title>
-                <v-spacer></v-spacer>
-                    <v-menu bottom left>
-                        <v-btn slot="activator" icon>
-                        <v-icon>fas fa-tasks</v-icon>
-                        </v-btn>
-                        <v-list>
-                            <v-list-tile>
-                                <v-list-tile-title>Questão</v-list-tile-title>
-                            </v-list-tile>
-                        </v-list>
-                    </v-menu>
+            <v-toolbar dark color="red">
+                <v-toolbar-title>{{roomTitle}}</v-toolbar-title>
             </v-toolbar>
             <v-divider></v-divider>
         </v-card>
