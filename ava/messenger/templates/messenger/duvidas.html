@@ -19,7 +19,7 @@
                 {% for duvida in duvidas %}
                     <v-text-field
                     name="duvida-{{duvida.id}}"
-                    label="{{duvida.mensagem.mensagem}}"
+                    label="{{duvida.mensagem.conteudo}}"
                     value="{{duvida.resposta|default_if_none:""}}"
                     full-width
                     multi-line
