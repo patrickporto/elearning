@@ -9,7 +9,7 @@ services:
       - redis
       - database
     volumes:
-      - .:/opt/app
+      - ./ava:/opt/app/ava
       - ./.venv:/usr/lib/pypy
     environment:
       - MYSQL_DATABASE=ava
