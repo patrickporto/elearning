@@ -1,6 +1,6 @@
 FROM python:3.6-alpine
 RUN set -ex && \
-    apk add --no-cache --update build-base git python3-dev
+    apk add --no-cache --update build-base git python3-dev zlib-dev
 ADD . /opt/app
 WORKDIR /opt/app
 RUN set -ex && \
