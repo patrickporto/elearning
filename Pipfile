@@ -13,6 +13,7 @@ django-compressor = "*"
 channels-redis = "*"
 pillow = "*"
 djangorestframework = "*"
+pymysql = "*"
 
 
 [dev-packages]

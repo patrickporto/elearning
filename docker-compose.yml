@@ -7,11 +7,25 @@ services:
       - "8000:8000"
     links:
       - redis
+      - database
     volumes:
       - .:/opt/app
       - ./.venv:/usr/lib/pypy
-      - ./node_modules:/opt/app/node_modules
+    environment:
+      - MYSQL_DATABASE=ava
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=adminpass
+      - MYSQL_HOST=database
   redis:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+  database:
+    image: "mysql:5.7"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=ava
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=adminpass
+      - MYSQL_ROOT_PASSWORD=adminpass

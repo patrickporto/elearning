@@ -11,5 +11,8 @@ run-debug:
 migrate:
 	$(MANAGE) migrate
 
+createsuperuser:
+	$(MANAGE) createsuperuser
+
 start-redis:
 	docker run -p 6379:6379 -d redis
